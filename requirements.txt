@@ -3,3 +3,4 @@ gunicorn
 undetected-chromedriver==3.5.5
 fake-useragent
 selenium
+requests
