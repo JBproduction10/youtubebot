@@ -9,7 +9,6 @@ Then open: http://localhost:5000
 """
 
 import json
-import os
 import queue
 import random
 import threading
@@ -123,8 +122,8 @@ def parse_duration(text: str) -> int:
 
 def build_driver():
     opts = uc.ChromeOptions()
-    # Always headless on server — no display available on Fly.io
-    opts.add_argument("--headless=new")
+    if config["headless"]:
+        opts.add_argument("--headless=new")
     if config["mute"]:
         opts.add_argument("--mute-audio")
     opts.add_argument("--no-sandbox")
@@ -133,9 +132,7 @@ def build_driver():
     opts.add_argument(f"--user-agent={random_user_agent()}")
     opts.add_argument("--window-size=1280,900")
     opts.add_argument("--log-level=3")
-    opts.add_argument("--disable-gpu")
-    opts.add_argument("--remote-debugging-port=9222")
-    return uc.Chrome(options=opts, use_subprocess=True)
+    return uc.Chrome(options=opts, use_subprocess=True, version_main=123)
 
 
 def dismiss_consent(driver):
@@ -454,6 +451,5 @@ def stream():
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8080))
-    print(f"\n  YouTubeBot  →  http://localhost:{port}\n")
-    app.run(debug=False, threaded=True, host="0.0.0.0", port=port)
+    print("\n  YouTubeBot  →  http://localhost:5000\n")
+    app.run(debug=False, threaded=True, port=5000)
